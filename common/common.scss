@@ -1,357 +1,767 @@
-@import "variables";
-@import "sidebar";
-@import "chat";
+/* Import the essential 16-bit font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-.d-editor-textarea-wrapper,
-.select-kit-header {
-  border-radius: var(--mint-border-radius);
+/* ------------------------------------------------------------------- */
+/* DISCOURSE 16-BIT THEME (V14 - COMPACT & HIGH CONTRAST)              */
+/* ------------------------------------------------------------------- */
+/*
+  TABLE OF CONTENTS:
+  1. PALETTE & GLOBAL STYLES
+  2. LAYOUT & HEADER
+  3. UNIFIED PANELS & CONTAINERS
+  4. TOPIC LIST & POSTS
+  5. BUTTONS & INTERACTIVITY
+  6. LINKS, BADGES & AVATARS
+  7. NAVIGATION & DROPDOWNS
+  8. POLLS & PROGRESS BARS
+  9. DECORATIVE ELEMENTS & PSEUDOS
+  10. COMPONENTS (USER CARD, TIMELINE, ETC.)
+  11. KEYFRAME ANIMATIONS
+*/
+
+
+/* --- [ 1. PALETTE & GLOBAL STYLES ] --- */
+:root {
+    --heading-font-family :'VT323', monospace !important;
+	--snes-font-family: 'VT323', monospace;
+	--snes-dark-purple: #2f2a40;
+	--snes-bg-purple: #f2f2f2;
+	--snes-light-gray: #d3d3d3;
+	--snes-dark-gray: #828282;
+	--snes-text-color: #1a1a1a !important;
+	--snes-light-text-color: #f2f2f2;
+	--snes-highlight-blue: #5495e8;
+	--snes-highlight-light: #f2f2f2;
+	--snes-highlight-green: #61e07f;
+	--snes-highlight-yellow: #f5de53;
+	--snes-visited-link-color: #8874a3;
+	/* FIXED: Set global icon color to high-contrast text color for theme-wide consistency */
+	--snes-global-icon-color: var(--snes-text-color);
+	--snes-muted-text-color: var(--snes-dark-gray);
+	--font-family-sans-serif: var(--snes-font-family);
+	--primary: var(--snes-text-color);
+	--header-background: var(--snes-light-gray);
+	--d-border-radius: 0;
+	--spacing-unit: 0.75rem;
+	--danger-medium: black !important;
 }
 
-:root {
-  --d-input-border-radius: var(--mint-border-radius);
-  --d-nav-underline-height: 0;
+body {
+	background-color: var(--snes-bg-purple);
+	background-image: linear-gradient(rgba(0, 0, 0, 0.1) 50%, transparent 50%);
+	background-size: 100% 4px;
+	font-family: var(--snes-font-family);
+	color: var(--snes-text-color);
+	font-size: 18px;
+	position: relative;
+	overflow-x: hidden;
+}
+
+body::after {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 200vw;
+	height: 200vh;
+	pointer-events: none;
+	background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.1"/></svg>');
+	animation: static-noise-anim 0.2s steps(2) infinite;
+	z-index: 1000;
+}
+
+img,
+.avatar {
+	image-rendering: pixelated;
+}
+
+.d-icon {
+	color: var(--snes-global-icon-color);
+}
+
+.text-muted,
+.topic-meta-data,
+.topic-list .topic-excerpt,
+.category-name,
+.post-info,
+.discourse-tags .discourse-tag {
+    color: var(--snes-muted-text-color) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--snes-muted-text-color);
+}
+
+
+/* --- [ 2. LAYOUT & HEADER ] --- */
+
+.d-header a,
+.d-header a:hover {
+	color: var(--snes-text-color);
+	text-decoration: none;
 }
 
 .d-header {
-  height: 5em;
-  box-shadow: none;
+	background: var(--snes-light-gray);
+	border-bottom: 4px solid var(--snes-dark-gray);
+	box-shadow: 0 4px 0 0 var(--snes-highlight-blue);
+	padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
 }
 
-.d-header-mode .bootstrap-mode {
-  color: var(--secondary);
+.wrap {
+	width: 90%;
+	max-width: 1200px;
 }
 
-.alert.alert-info {
-  border-radius: 10px;
+/* Icons in header buttons use the global high-contrast color now */
+.d-header .header-buttons .btn .d-icon {
+	font-size: 1.5em;
 }
 
-.navigation-categories .search-banner {
-  border-radius: var(--mint-border-radius);
-  height: 350px;
-  box-sizing: border-box;
-  padding: 2.5em 0 3em;
-  margin: 1em auto;
-  max-width: 1110px;
+/* Static header buttons with no hover effects */
+.d-header .header-buttons .btn {
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0 var(--spacing-unit);
 }
 
-.category-box-inner {
-  @include mint-card-bg;
+.d-header-wrap .panel-body,
+.d-header-wrap .contents {
+    padding-top: 0;
 }
 
-.navigation-topics {
-  .container.list-container {
-    border-radius: var(--mint-border-radius);
-    box-shadow:
-      0 8px 60px 0 rgb(103, 151, 255, 0.1),
-      0 12px 90px 0 rgb(133, 255, 103, 0.1);
-    padding: 2em;
-    border-top: 8px solid var(--tertiary);
-    margin-top: 0.8em;
-
-    @include mint-card-bg;
-  }
+.d-header .flex-row {
+    align-items: center;
 }
 
-.search-widget .search-context {
-  padding: 10px;
-  background-color: var(--tertiary-medium);
-  border-radius: var(--mint-border-radius);
+.d-header-wrap .search-dropdown .search-drop-header,
+.d-header-wrap .search-dropdown .search-input,
+.d-header-wrap .search-dropdown .search-menu-panel {
+    background: var(--snes-light-gray);
+    border: 4px solid var(--snes-dark-gray);
+    border-color: var(--snes-dark-gray) #f2f2f2 #f2f2f2 var(--snes-dark-gray);
+    box-shadow: none;
 }
 
-.search-menu .search-context .show-help {
-  color: var(--primary-very-low);
+.search-dropdown input[type="text"] {
+    color: var(--snes-text-color);
+    background-color: var(--snes-light-gray);
 }
 
-.search-menu .search-input {
-  border: 0;
+.search-dropdown input[type="text"]::placeholder {
+    color: var(--snes-dark-gray);
 }
 
-.menu-panel .d-label {
-  color: var(--primary);
+/* Search and hamburger icons use the global high-contrast color */
+.search-dropdown .search-icon {
+    color: var(--snes-global-icon-color);
 }
 
-a {
-  color: var(--tertiary-hover);
+.d-header .d-icon,
+.search-dropdown .search-icon {
+  color: var(--snes-text-color) !important;
 }
 
-.category-boxes {
-  grid-gap: 2em;
-  border-radius: var(--mint-border-radius);
 
-  .category-box {
-    width: 100%;
-    margin: 0;
-    overflow: hidden;
-    border: none;
-    border-top: 8px solid;
-    background: var(--secondary);
-    border-radius: var(--mint-border-radius);
-    box-shadow: 0 2px 3px 0 rgb(2, 47, 57, 0.14);
-
-    .category-box-inner {
-      border: none;
-      padding: 0;
-
-      .category-details {
-        padding: 2em;
-      }
-    }
-
-    &:hover {
-      box-shadow: 0 40px 30px 0 rgb(2, 47, 57, 0.1);
-      transform: translateY(-2px);
-    }
-  }
+.hamburger-menu .hamburger-menu-bar,
+.hamburger-panel .panel {
+   background-color: var(--snes-text-color);
 }
 
-@media (width <= 960px) {
-  .category-boxes.with-logos.with-subcategories {
-    grid-template-columns: 1fr;
-  }
+
+/* --- [ 3. UNIFIED PANELS & CONTAINERS ] --- */
+.topic-list-container,
+.topic-body,
+.sidebar-container .sidebar-content-wrapper,
+.poll-container {
+	position: relative;
+	background-color: var(--snes-light-gray);
+	border-style: solid;
+	border-width: 4px;
+	border-color: var(--snes-dark-gray) #f2f2f2 #f2f2f2 var(--snes-dark-gray);
+	padding: calc(var(--spacing-unit) * 2);
+	overflow: hidden;
 }
 
-.category-list-item.category {
-  border-radius: var(--mint-border-radius);
-  border-right: 1px solid var(--primary-low) !important;
-  box-shadow: 0 0 4px 0 rgb(0, 0, 0, 0.1);
-  margin: 0 0.59em 2em 0.59em;
-  background: var(--primary-very-low);
+.topic-body {
+    padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5);
+    line-height: 1.5;
 }
 
-#create-topic {
-  color: var(--secondary);
-  background: var(--tertiary);
-  transition: all 0.3s linear;
-  border-radius: var(--mint-border-radius);
-  text-transform: uppercase;
-  border: 2px solid var(--tertiary);
-
-  .fa {
-    color: var(--secondary);
-  }
-
-  &:hover {
-    background: var(--tertiary);
-    color: var(--secondary);
-    box-shadow: var(--mint-hover-shadow);
-    transition: all 0.3s linear;
-    border-radius: var(--mint-border-radius);
-
-    .fa {
-      color: var(--secondary);
-    }
-  }
+.sidebar-container {
+    margin-right: calc(var(--spacing-unit) * 2);
 }
 
-.open .grippie {
-  background: var(--tertiary);
+.sidebar-container .sidebar-content-wrapper {
+	padding: var(--spacing-unit);
+	height: 100%;
 }
 
-.options.toolbar-popup-menu-options {
-  button.single-select-header.dropdown-select-box-header {
-    background: transparent;
-    border-radius: none;
-    border: none;
-
-    &:hover {
-      background: var(--tertiary);
-      border-radius: 0;
-    }
-  }
+.poll-container {
+	background: #e3e3e3;
 }
 
-.list-controls {
-  margin-top: 1em;
+/* --- [ 4. TOPIC LIST & POSTS ] --- */
+.topic-list-container {
+	margin-top: calc(var(--spacing-unit) * 2);
+	/* FIX: Added more breathing room around the entire topic list */
+	padding: var(--spacing-unit);
 }
 
-.list-controls .combo-box .combo-box-header {
-  border: none;
-  border-radius: var(--mint-border-radius);
-
-  @include mint-card-bg;
+.topic-list {
+	border: none;
 }
 
-.menu-panel .panel-body-bottom .btn {
-  svg {
-    color: var(--tertiary);
-  }
-
-  &:hover {
-    background: var(--tertiary);
-    color: var(--secondary);
-  }
+.topic-list-header {
+	border-bottom: 4px solid var(--snes-dark-gray);
+	color: var(--snes-text-color);
+	font-size: 1.1em;
+	/* FIX: Restored space below the header for better visual separation */
+	padding-bottom: calc(var(--spacing-unit) / 2);
+	margin-bottom: calc(var(--spacing-unit) / 2);
 }
 
-.nav-pills li a {
-  border: 1px solid transparent;
-  border-radius: var(--mint-border-radius);
-
-  &:hover {
-    border-radius: var(--mint-border-radius);
-    transition: all 0.3s linear;
-    background-color: transparent;
-    color: var(--tertiary);
-    border: 1px dashed var(--tertiary);
-  }
-
-  &.active {
-    border-radius: var(--mint-border-radius);
-    transition: all 0.3s linear;
-    background: var(--mint-color-mint);
-    color: var(--secondary);
-    border: 1px solid var(--mint-color-mint);
-  }
+.topic-list-header .replies,
+.topic-list-header .views,
+.topic-list-header .activity {
+	text-align: center;
 }
 
-.select-kit.dropdown-select-box .dropdown-select-box-header {
-  background: var(--tertiary);
-  border-radius: var(--mint-border-radius);
-  border: 1px solid var(--tertiary);
-  color: var(--secondary);
-
-  svg {
-    color: var(--secondary);
-
-    &:hover {
-      color: var(--secondary);
-    }
-  }
+.topic-list-item {
+	border-bottom: 2px dotted var(--snes-dark-gray);
+	/* FIX: Increased vertical padding for readability and to prevent the "last visit" line from overlapping */
+	padding: 0.6rem 0; 
 }
 
-.d-editor-button-bar
-  .select-kit.dropdown-select-box
-  .dropdown-select-box-header {
-  background: transparent;
-  color: var(--primary-medium);
-  border: 1px solid transparent;
-  border-radius: 0;
-
-  svg {
-    color: currentcolor;
-  }
-
-  &:hover {
-    color: var(--secondary);
-    background: var(--tertiary-hover);
-    border: 1px solid var(--tertiary-hover);
-    border-radius: 5px;
-  }
+.topic-list-item:last-child {
+	border-bottom: none;
 }
 
-.discourse-no-touch .btn:hover .d-icon,
-.discourse-no-touch .btn.btn-hover .d-icon {
-  color: var(--tertiary-hover);
+.topic-list-item:hover {
+	background-color: #e3e3e3;
 }
 
-.discourse-no-touch .btn:not(.btn-flat):hover,
-.discourse-no-touch .btn:not(.btn-flat).btn-hover {
-  color: var(--secondary);
-  background: var(--tertiary-hover);
-  border-radius: 5px;
-
-  .fa {
-    color: var(--secondary);
-  }
+.topic-post {
+	margin-bottom: var(--spacing-unit);
 }
 
-.menu-panel .widget-link:hover,
-.menu-panel .widget-link:focus,
-.menu-panel .categories-link:hover,
-.menu-panel .categories-link:focus {
-  background-color: var(--tertiary-low);
+.topic-body .cooked p,
+.topic-body .cooked ul,
+.topic-body .cooked ol {
+margin-block-start: 0.5em;
+margin-block-end: 0.5em;
 }
 
-.btn-default {
-  color: var(--secondary);
-  background: var(--tertiary);
-  transition: all 0.3s linear;
-  border-radius: var(--mint-border-radius);
-  text-transform: uppercase;
-  border: 1px solid var(--tertiary);
+.topic-body .cooked h1,
+.topic-body .cooked h2,
+.topic-body .cooked h3 {
+margin-top: 1em;
+margin-bottom: 0.25em;
+}
 
-  .fa {
-    color: var(--secondary);
-  }
+.topic-list .topic-list-data {
+    /* MODIFIED: Reduced top padding to 0 for maximum vertical compactness */
+    padding: 0 .5em 0 !important;
+    /* MODIFIED: Set a specific, tight line-height to reduce space between lines */
+    line-height: 1.1 !important;
+}
+
+.topic-list-main-link,
+.latest-topic-list-item .main-link,
+.topic-list .main-link {
+    /* MODIFIED: Reduced font size to make the topic title smaller */
+    font-size: 0.9em !important;
+}
+
+.topic-list-main-link a.title,
+.latest-topic-list-item .main-link a.title,
+.topic-list .main-link a.title {
+    /* This is already at its minimum, no change needed */
+    padding: 0 !important;
+}
+
+.topic-list .num.posts a,
+.topic-list .num .badge-posts {
+    /* This is already at its minimum, no change needed */
+    padding: 0 !important;
+}
+
+.topic-list .link-bottom-line {
+    display: inline !important;
+}
+
+.topic-list .excerpt {
+    margin: 0 !important;
+    /* MODIFIED: Set a specific, tight line-height */
+    line-height: 1.1 !important;
+}
+
+.topic-list .posters {
+    width: auto !important;
+    /* MODIFIED: Reduced max-width to tighten horizontal space */
+    max-width: 120px !important;
+}
+
+.new-posts-line {
+    display: none !important;
+}
+
+/* --- [ 5. BUTTONS & INTERACTIVITY ] --- */
+.btn {
+	font-family: var(--snes-font-family);
+	font-size: 18px;
+	transition: none;
+	background-color: var(--snes-light-gray);
+	border: 4px solid;
+	border-color: #fff var(--snes-dark-gray) var(--snes-dark-gray) #fff;
+	padding: calc(var(--spacing-unit) / 2) var(--spacing-unit);
+	line-height: 1;
+}
+
+.btn:active,
+.btn.is-active {
+	border-color: var(--snes-dark-gray) #fff #fff var(--snes-dark-gray);
+	transform: translate(1px, 1px);
+}
+
+.btn:focus-visible {
+	outline: 2px solid var(--snes-highlight-blue);
+	outline-offset: 2px;
 }
 
 .btn-primary {
-  border-radius: var(--mint-border-radius);
+	background-color: var(--snes-highlight-blue);
 }
 
-.discourse-no-touch .btn-danger:hover {
-  background: var(--danger-hover);
+.btn-danger {
+	background-color: var(--snes-highlight-light);
 }
 
-.create {
-  border-radius: var(--mint-border-radius);
+#create-topic.btn-primary,
+.new-topic-dropdown .btn-primary {
+	animation: button-flash-anim 2s infinite;
 }
 
-.select-kit .select-kit-row.is-selected {
-  background-color: var(--secondary-very-high);
+.like button .d-icon-heart {
+	display: none;
 }
 
-.modal-inner-container,
-.edit-category-footer {
-  .btn-primary {
-    border-radius: var(--mint-border-radius);
-  }
+.like button::before {
+	content: '';
+	display: inline-block;
+	width: 4px;
+	height: 4px;
+	margin: 0 2px;
+	color: var(--snes-dark-gray);
+	box-shadow: 4px 0, 8px 0, 12px 0, 0 4px, 12px 4px, 4px 8px, 8px 8px;
+	animation: heart-unliked-anim 0.5s forwards;
 }
 
-.user-menu .quick-access-panel li:hover {
-  background-color: var(--tertiary-low);
+.like.liked button::before {
+	color: var(--snes-highlight-light);
+	animation: heart-liked-anim 0.5s infinite;
+}
+
+input[type="checkbox"] {
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-block;
+	vertical-align: middle;
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	border: 2px solid var(--snes-dark-gray);
+	position: relative;
+	top: -2px;
+}
+
+input[type="checkbox"]:checked::after {
+	content: '';
+	display: block;
+	position: absolute;
+	width: 4px;
+	height: 8px;
+	border: solid var(--snes-text-color);
+	border-width: 0 4px 4px 0;
+	transform: rotate(45deg);
+	left: 4px;
+	top: 0px;
+}
+
+
+/* --- [ 6. LINKS, BADGES & AVATARS ] --- */
+a {
+	color: var(--snes-highlight-blue);
+	text-decoration: none;
 }
 
 a:hover {
-  color: var(--tertiary-hover);
+	color: var(--snes-dark-purple); /* V12 Accessibility Fix */
+	text-decoration: underline;
 }
 
-.image-upload-controls .btn-default {
-  border: 1px solid var(--secondary);
-
-  .fa {
-    color: var(--secondary);
-  }
+a:visited,
+.topic-list .title a:visited {
+	color: var(--snes-visited-link-color);
 }
 
-.admin-controls,
-.email-template,
-.admin-container {
-  .nav-pills > li a.active {
-    background: var(--tertiary);
-    color: var(--secondary);
-  }
-
-  .btn-primary {
-    border-radius: var(--mint-border-radius);
-  }
+.badge-category {
+	font-size: 16px;
+	padding: 4px 8px;
+	border: 2px solid var(--snes-text-color);
+	background-color: var(--snes-highlight-green) !important;
+	color: var(--snes-text-color) !important;
+	margin-right: calc(var(--spacing-unit) / 2);
 }
 
-.custom-search-banner-wrap {
-  border-radius: var(--mint-border-radius);
-  background: linear-gradient(
-    270deg,
-    var(--tertiary-medium) 0%,
-    var(--tertiary) 100%
-  );
+.staff .badge-category {
+	background-color: var(--snes-highlight-yellow) !important;
 }
 
-.custom-search-banner-wrap .custom-search-banner-headline,
-.custom-search-banner-wrap h1,
-.custom-search-banner-wrap p {
-  color: var(--primary-very-low);
+.avatar {
+	border-radius: 0 !important;
+	border: 4px solid;
+	border-color: #f2f2f2 var(--snes-dark-gray) var(--snes-dark-gray) #f2f2f2;
 }
 
-summary.select-kit-header.single-select-header.dropdown-select-box-header {
-  padding: 0.5em;
+
+/* --- [ 7. NAVIGATION & DROPDOWNS ] --- */
+.user-card-container,
+.d-header .d-dropdown {
+	background: var(--snes-dark-purple) !important;
+	border: 4px solid var(--snes-light-gray) !important;
+	color: var(--snes-light-text-color) !important;
 }
 
-.search-container .search-advanced-sidebar {
-  .search-advanced-title {
-    background: var(--tertiary);
-    color: var(--secondary);
-  }
+.d-dropdown .d-dropdown-item {
+	border-bottom: 2px dotted var(--snes-dark-gray) !important;
+	color: var(--snes-light-text-color) !important;
+	padding: var(--spacing-unit);
+}
 
-  .search-advanced-filters {
-    border: 1px dashed var(--tertiary);
-  }
+.d-dropdown .d-dropdown-item:last-child {
+	border-bottom: none !important;
+}
+
+.d-dropdown-item:hover {
+	background-color: var(--snes-bg-purple) !important;
+}
+
+
+/* --- [ 8. POLLS & PROGRESS BARS ] --- */
+/* (No styles defined in provided code) */
+
+
+/* --- [ 9. DECORATIVE ELEMENTS & PSEUDOS ] --- */
+.topic-list .num.replies::before {
+	content: '';
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 8px;
+	background-color: var(--snes-text-color);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 2h12v9H8.6L6 14v-3H2V2z'/%3E%3C/svg%3E") no-repeat center;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 2h12v9H8.6L6 14v-3H2V2z'/%3E%3C/svg%3E") no-repeat center;
+}
+
+.topic-list .num.views::before {
+	content: '';
+	display: inline-block;
+	width: 16px;
+	height: 10px;
+	margin-right: 8px;
+	background: transparent;
+	border-radius: 50%;
+	border: 3px solid var(--snes-text-color);
+	position: relative;
+}
+
+.topic-list .num.views::after {
+	content: '';
+	display: block;
+	width: 6px;
+	height: 6px;
+	background: var(--snes-text-color);
+	border-radius: 50%;
+	position: absolute;
+	top: 2px;
+	left: 5px;
+}
+
+
+/* --- [ 10. COMPONENTS (USER CARD, TIMELINE, ETC.) ] --- */
+.user-card .card-content {
+	border: none !important;
+}
+
+.user-card h3 a {
+	color: var(--snes-highlight-yellow) !important;
+}
+
+.user-card .metadata-row dt::before {
+	color: var(--snes-highlight-blue);
+	margin-right: 8px;
+}
+
+.user-card .metadata-row:nth-of-type(1) dt::before { content: 'JOIN:'; }
+.user-card .metadata-row:nth-of-type(2) dt::before { content: 'SEEN:'; }
+
+.user-card .user-card-avatar {
+	border-color: var(--snes-dark-purple);
+}
+
+::-webkit-scrollbar {
+	width: 20px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--snes-dark-gray);
+	border-left: 2px solid var(--snes-text-color);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--snes-light-gray);
+	border: 2px solid;
+	border-color: #fff var(--snes-dark-gray) var(--snes-dark-gray) #fff;
+}
+
+.loading-spinner {
+	width: 32px;
+	height: 32px;
+	border: none;
+	animation: crystal-spin-anim 2s infinite linear;
+}
+
+.loading-spinner::after {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: var(--snes-highlight-blue);
+	box-shadow: 0 0 0 4px var(--snes-dark-purple), inset -4px -4px 0px 0px var(--snes-highlight-light);
+}
+
+.topic-timeline {
+	background-color: transparent;
+}
+
+.timeline-track {
+	border-left: 4px solid var(--snes-text-color);
+	background: var(--snes-dark-gray);
+}
+
+.timeline-scrubber {
+	background: var(--snes-light-gray);
+	border: 4px solid;
+	border-color: #fff var(--snes-dark-gray) var(--snes-dark-gray) #fff;
+	border-radius: 0;
+}
+
+.timeline-marker {
+	color: var(--snes-light-text-color);
+}
+
+.search-banner {
+	padding: 0 !important;
+}
+
+.search-banner .search-query {
+	border: 4px solid;
+	border-color: var(--snes-dark-gray) #f2f2f2 #f2f2f2 var(--snes-dark-gray);
+	border-radius: 0;
+	font-size: 20px;
+}
+
+.search-banner .search-context {
+	font-size: 16px;
+}
+
+.topic-list .num {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+
+/* --- [ 11. KEYFRAME ANIMATIONS ] --- */
+@keyframes menu-select-anim {
+	from { transform: translateY(-50%) translateX(0); }
+	to { transform: translateY(-50%) translateX(3px); }
+}
+
+@keyframes dialogue-bounce-anim {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-5px); }
+}
+
+@keyframes button-flash-anim {
+	0% { background-color: var(--snes-highlight-blue); }
+	33% { background-color: var(--snes-highlight-green); }
+	66% { background-color: var(--snes-highlight-yellow); }
+	100% { background-color: var(--snes-highlight-blue); }
+}
+
+@keyframes heart-liked-anim {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.2); }
+}
+
+@keyframes heart-unliked-anim {
+	from { transform: scale(1.2); }
+	to { transform: scale(1); }
+}
+
+@keyframes crystal-spin-anim {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+@keyframes static-noise-anim {
+	0% { transform: translate(0, 0); }
+	10% { transform: translate(-5%, -5%); }
+	20% { transform: translate(-10%, 5%); }
+	30% { transform: translate(5%, -10%); }
+	40% { transform: translate(-5%, 15%); }
+	50% { transform: translate(-10%, 5%); }
+	60% { transform: translate(15%, 0); }
+	70% { transform: translate(0, 10%); }
+	80% { transform: translate(-15%, 0); }
+	90% { transform: translate(10%, 5%); }
+	100% { transform: translate(5%, 0); }
+}
+
+/* misc fixes */
+.topic-list-item {
+    border-bottom: none !important;
+}
+
+/* Hides the "new posts since last visit" line */
+tr.new-posts-line {
+    display: none !important;
+}
+.topic-list .topic-list-item-separator {
+    border-bottom: 1px solid var(--primary-low);
+    .topic-list-data {
+        display: none;
+    }
+}
+body {
+     color: black !important; 
+}
+
+.topic-list-data.num.views::before {
+    display: none !important;
+}
+
+.topic-list .replies,
+.topic-list .views {
+    display: none !important;
+}
+/*mobile disable */
+
+
+.avatar {
+    width: 35px !important;
+    height: 35px !important;
+}
+
+.title, 
+.raw-link, 
+.raw-topic-link {
+    font-size: 1.2em !important;
+}
+
+
+/* mobile fix */
+
+@media (max-width: 768px) {
+
+    /* --- [ 1. HEADER FIXES ] --- */
+
+    /* Reduce header padding to save vertical space */
+    .d-header {
+        padding: 0.5rem 1rem;
+    }
+
+    /* Make header icons slightly smaller */
+    .d-header .d-icon {
+        font-size: 1.2em;
+    }
+
+    /* Adjust spacing for header buttons */
+    .d-header .header-buttons .btn {
+        padding: 0 0.5rem;
+    }
+
+    /* Reduce the size of the site logo */
+    #site-logo {
+        max-height: 30px; 
+    }
+
+    /* --- [ 2. PREVIOUS FIXES ] --- */
+
+    /* Make avatars a more reasonable size on mobile */
+    .avatar {
+        width: 45px !important;
+        height: 45px !important;
+    }
+
+    /* Reduce the font size of titles for better readability */
+    .title,
+    .raw-link,
+    .raw-topic-link {
+        font-size: 1em !important; 
+    }
+
+    /* Show the compact columns that were hidden on desktop */
+    .topic-list .replies,
+    .topic-list .views,
+    .topic-list .activity {
+        display: table-cell !important;
+    }
+
+    /* Make the columns very compact to fit on a small screen */
+    .topic-list .num {
+        font-size: 0.8em;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+
+    /* Hide text labels in headers, leaving only icons */
+    .topic-list-header-column .sortable-title {
+        display: none;
+    }
+}
+
+/*discourse banner */
+
+.powered-by-discourse__content {
+    display : none
+}
+
+/*new fix */
+.header-search--enabled .floating-search-input .search-banner-inner.wrap .search-menu .search-icon,.search-header--visible .floating-search-input .search-banner-inner.wrap .search-menu .search-icon {
+
+background: rgba(0,0,0,0);
+
+pointer-events: auto !important; ;
+
+color: var(--header_primary-medium);
+
+margin-left: calc(1rem - .9em);
+
+height: 100%;
+
+position: absolute;
+
+z-index: 2;
+
+}
+
+.header-search--enabled .floating-search-input .search-banner-inner.wrap .search-menu .search-input, 
+.search-header--visible .floating-search-input .search-banner-inner.wrap .search-menu .search-input {
+    padding: 0 0 0 3em !important;
+    
 }
